@@ -1,0 +1,44 @@
+<!DOCTYPE HTML>
+<head>
+  <script
+			  src="https://code.jquery.com/jquery-3.3.1.min.js"
+			  integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+			  crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.4.0/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.4.0/dist/leaflet.js"></script>
+</head>
+
+<body>
+
+  <div id="census">Census</div>
+  <div id="mymap" style="height:500px"></div>
+
+
+</body>
+
+<script>
+
+  $('#census').on('click', function)
+
+https://data.cityofchicago.org/resource/74p9-q2aq.geojson
+
+  var MyMap = {
+    map: null,
+    legend: null,
+    censusLayer: null,
+    libraryLayer: null,
+
+    initialize: function() {
+      this.map = L.map('mymap', {
+                              zoomControl: false,
+                              scrollWheelZoom: false
+                            }).setView([41.881832, -87.623177], 7);
+
+    }
+
+    makeCensusLayer: function() {
+
+    }
+  }
+
+</script>
