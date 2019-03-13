@@ -11,6 +11,8 @@
 <body>
 
   <div id="census">Census</div>
+  <div id="library">Libraries</div>
+  <div id="ca">Community Areas</div>
   <div id="mymap" style="height:500px"></div>
 
 
@@ -18,16 +20,34 @@
 
 <script>
 
-  $('#census').on('click', function(e) {
     $.ajax({
+      // Getting census tracts
       url: "https://data.cityofchicago.org/resource/74p9-q2aq.geojson",
       type: "GET",
       data: {
-        "$limit" : 5000
+        "$limit" : 100000
       }
     }).done(function(data) {
       console.log("Retrieved records from the dataset!");
       MyMap.initialize(data)
+    });
+
+    $('#census').on('click', function(e) {
+        MyMap.addCensusLayer();
+      })
+
+  $('#library').on('click', function(e) {
+    $.getJSON("https://data.cityofchicago.org/resource/psqp-6rmg.geojson")
+      .then(function(data) {
+        console.log("LIBRARY!");
+        MyMap.addLibraryLayer(data);
+    });
+  })
+
+  $('#ca').on('click', function(e) {
+    $.getJSON("https://data.cityofchicago.org/resource/igwz-8jzy.geojson")
+      .then(function(data) {
+        MyMap.addCommunityAreasLayer(data);
     });
   })
 
@@ -38,19 +58,53 @@
     legend: null,
     censusLayer: null,
     libraryLayer: null,
+    communityAreasLayer: null,
 
     initialize: function(init) {
       this.map = L.map('mymap', {
                               zoomControl: false,
                               scrollWheelZoom: false
-                            }).setView([41.881832, -87.623177], 7);
+                            }).setView([41.881832, -87.623177], 10);
 
       this.censusLayer = L.geoJson(init, {
         style: {
           color: '#555555'
         }
       }).addTo(this.map)
+    },
+
+    addLibraryLayer: function(data) {
+      this.libraryLayer = L.geoJson(data).addTo(this.map);
+    },
+
+    communityAreasStyle: function(feature) {
+      return {
+        fillColor: '#FFC0CB',
+        opacity: 0.7
+      }
+    },
+
+    addCommunityAreasLayer: function(data) {
+      if (this.map.hasLayer(this.censusLayer)) {
+        this.map.removeLayer(this.censusLayer);
+      }
+      if (this.communityAreasLayer === null) {
+        this.communityAreasLayer = L.geoJson(data, {
+          style: this.communityAreasStyle
+          }).addTo(this.map);
+      } else {
+        this.communityAreasLayer.addTo(this.map);
+      }
+    },
+
+    addCensusLayer: function() {
+      if (this.map.hasLayer(this.communityAreasLayer)) {
+        this.map.removeLayer(this.communityAreasLayer);
+      }
+
+      this.censusLayer.addTo(this.map);
     }
+
   };
 
 </script>
