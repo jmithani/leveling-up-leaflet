@@ -18,9 +18,20 @@
 
 <script>
 
-  $('#census').on('click', function)
+  $('#census').on('click', function(e) {
+    $.ajax({
+      url: "https://data.cityofchicago.org/resource/74p9-q2aq.geojson",
+      type: "GET",
+      data: {
+        "$limit" : 5000
+      }
+    }).done(function(data) {
+      console.log("Retrieved records from the dataset!");
+      MyMap.initialize(data)
+    });
+  })
 
-https://data.cityofchicago.org/resource/74p9-q2aq.geojson
+
 
   var MyMap = {
     map: null,
@@ -28,17 +39,18 @@ https://data.cityofchicago.org/resource/74p9-q2aq.geojson
     censusLayer: null,
     libraryLayer: null,
 
-    initialize: function() {
+    initialize: function(init) {
       this.map = L.map('mymap', {
                               zoomControl: false,
                               scrollWheelZoom: false
                             }).setView([41.881832, -87.623177], 7);
 
+      this.censusLayer = L.geoJson(init, {
+        style: {
+          color: '#555555'
+        }
+      }).addTo(this.map)
     }
-
-    makeCensusLayer: function() {
-
-    }
-  }
+  };
 
 </script>
